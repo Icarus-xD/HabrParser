@@ -1,0 +1,37 @@
+version: '3'
+services:
+  app:
+    image: habr-parser
+    container_name: habr-parser
+    deploy:
+      resources:
+        limits:
+          cpus: '0-3'
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: habr-parser-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: habr_parser
+
+  # admin-panel:
+  #   image: habr-parser-admin-panel
+  #   container_name: habr-parser-admin-panel
+  #   build:
+  #     context: ./admin_panel
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8000:8000
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - db 
